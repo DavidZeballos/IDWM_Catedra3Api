@@ -1,0 +1,45 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos generados por Visual Studio y .NET
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de compilación
+bin/
+obj/
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Configuración de Visual Studio
+.vscode/
+.idea/
+*.code-workspace
+
+# Configuración de entornos y secret keys
+.env
+
+# Archivos de sistema
+*.db
+*.sqlite
+
+# Paquetes NuGet
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Configuración de Docker
+docker-compose.override.yml
+*.dockerignore
+
+# Archivos generados por el cliente
+node_modules/
+dist/
