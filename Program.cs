@@ -23,7 +23,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // Configuración de autenticación JWT
-// Configuración de autenticación JWT
 var jwtSettings = builder.Configuration.GetSection("JWT");
 var signingKey = jwtSettings["SigningKey"] 
     ?? throw new InvalidOperationException("JWT SigningKey no configurado en appsettings.json.");
@@ -43,6 +42,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 // Registro de servicios personalizados
 builder.Services.AddSingleton<CloudinaryService>();
@@ -63,9 +72,25 @@ if (app.Environment.IsDevelopment())
 }
 
 // Middleware global
+app.UseCors("AllowAll"); // Aplicar política de CORS
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Ejecutar el seeding
+await RunSeedingAsync(app);
+
 app.Run();
+
+// Método para ejecutar el seeding
+async Task RunSeedingAsync(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        await Seeder.SeedData(context, userManager);
+    }
+}
